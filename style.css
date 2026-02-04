@@ -1,0 +1,93 @@
+/* General Setup */
+body {
+    background-color: #121213;
+    color: white;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+
+h1 {
+    margin: 20px 0;
+    border-bottom: 1px solid #3a3a3c;
+    padding-bottom: 10px;
+}
+
+/* The Grid Board */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    width: 350px;
+    height: 420px;
+}
+
+.tile {
+    border: 2px solid #3a3a3c;
+    min-width: 60px;
+    min-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Tile Colors */
+.correct {
+    background-color: #538d4e; /* Green */
+    border-color: #538d4e;
+}
+
+.present {
+    background-color: #b59f3b; /* Yellow */
+    border-color: #b59f3b;
+}
+
+.absent {
+    background-color: #3a3a3c; /* Gray */
+    border-color: #3a3a3c;
+}
+
+/* Keyboard Styling */
+#keyboard-container {
+    margin-top: 30px;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+    touch-action: manipulation;
+}
+
+.keyboard-button {
+    font-family: inherit;
+    font-weight: bold;
+    border: 0;
+    padding: 0;
+    margin: 0 6px 0 0;
+    height: 58px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #818384;
+    color: white;
+    flex-grow: 1;
+    text-transform: uppercase;
+    width: 40px; 
+}
+
+.wide-button {
+    flex-grow: 1.5;
+    font-size: 12px;
+}
+
+.spacer-half {
+    flex: 0.5;
+}

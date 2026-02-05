@@ -19,12 +19,12 @@ h1 {
 #game-board {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-rows: repeat(5, 1fr); /* Changed from 6 to 5 */
     gap: 5px;
     padding: 10px;
     box-sizing: border-box;
     width: 350px;
-    height: 420px;
+    height: 350px; /* Reduced height to keep tiles square */
 }
 
 .tile {

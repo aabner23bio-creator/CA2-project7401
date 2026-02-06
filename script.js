@@ -1,13 +1,14 @@
+import { WORD_LIST } from './words.js';
+
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Setup Word List and Random Selection
-    const wordList = ["FROSTY", "BLACK", "GRASS", "BLAST", "SMEAR"];
-    const targetWord = wordList[Math.floor(Math.random() * wordList.length)].toLowerCase();
+    // 1. Setup Word List and Random Selection from the imported file
+    const targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)].toLowerCase();
     
     // 2. Game State
     let guessedWords = [[]]; 
     let availableSpace = 1;
     let wordIndex = 0;
-    const maxTries = 5; // Updated to 5 tries 
+    const maxTries = 5; 
 
     createSquares();
 
@@ -16,8 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize the grid squares (5 columns x 5 rows)
     function createSquares() {
         const gameBoard = document.getElementById("game-board");
-        gameBoard.innerHTML = ""; // Clear board
-        // 5 letters * 5 tries = 25 squares
+        gameBoard.innerHTML = ""; 
         for (let index = 0; index < 25; index++) {
             let square = document.createElement("div");
             square.classList.add("tile");
@@ -25,6 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
             gameBoard.appendChild(square);
         }
     }
+
+    // ... [The rest of your existing functions: handleInput, updateGuessedWords, 
+    // handleDeleteLetter, handleSubmitWord, getTileColor remain exactly the same]
+
 
     // Handle on-screen keyboard clicks
     keys.forEach(key => {

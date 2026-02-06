@@ -1,20 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-    createSquares();
-
-    let guessedWords = [[]]; // Array of arrays of letters
+    // 1. Setup Word List and Random Selection
+    const wordList = ["FROSTY", "BLACK", "GRASS", "BLAST", "SMEAR"];
+    const targetWord = wordList[Math.floor(Math.random() * wordList.length)].toLowerCase();
+    
+    // 2. Game State
+    let guessedWords = [[]]; 
     let availableSpace = 1;
     let wordIndex = 0;
-    
-    // THE SECRET WORD (You can change this!)
-    const targetWord = "CELLS"; 
+    const maxTries = 5; // Updated to 5 tries 
 
-    const keys = document.querySelectorAll(".keyboard-row button");
+    createSquares();
 
-    // Initialize the grid squares
+    const keys = document.querySelectorAll(".keyboard-button");
+
+    // Initialize the grid squares (5 columns x 5 rows)
     function createSquares() {
         const gameBoard = document.getElementById("game-board");
-
-        for (let index = 0; index < 30; index++) {
+        gameBoard.innerHTML = ""; // Clear board
+        // 5 letters * 5 tries = 25 squares
+        for (let index = 0; index < 25; index++) {
             let square = document.createElement("div");
             square.classList.add("tile");
             square.setAttribute("id", index + 1);
@@ -23,36 +27,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Handle on-screen keyboard clicks
-    for (let i = 0; i < keys.length; i++) {
-        keys[i].onclick = ({ target }) => {
-            const letter = target.getAttribute("data-key");
-
-            if (letter === "enter") {
-                handleSubmitWord();
-                return;
-            }
-
-            if (letter === "del") {
-                handleDeleteLetter();
-                return;
-            }
-
-            updateGuessedWords(letter);
-        };
-    }
+    keys.forEach(key => {
+        key.addEventListener("click", () => {
+            const letter = key.getAttribute("data-key");
+            handleInput(letter);
+        });
+    });
 
     // Handle physical keyboard presses
     document.addEventListener("keydown", (e) => {
         const letter = e.key.toLowerCase();
-        
         if (letter === "enter") {
-            handleSubmitWord();
+            handleInput("enter");
         } else if (letter === "backspace") {
-            handleDeleteLetter();
+            handleInput("del");
         } else if (/^[a-z]$/.test(letter)) {
-            updateGuessedWords(letter);
+            handleInput(letter);
         }
     });
+
+    function handleInput(key) {
+        if (wordIndex >= maxTries) return; // Game over, no more input
+
+        if (key === "enter") {
+            handleSubmitWord();
+        } else if (key === "del") {
+            handleDeleteLetter();
+        } else {
+            updateGuessedWords(key);
+        }
+    }
 
     function updateGuessedWords(letter) {
         const currentWordArr = guessedWords[guessedWords.length - 1];
@@ -60,8 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (currentWordArr && currentWordArr.length < 5) {
             currentWordArr.push(letter);
             const availableSpaceEl = document.getElementById(String(availableSpace));
-            availableSpace = availableSpace + 1;
             availableSpaceEl.textContent = letter;
+            availableSpace = availableSpace + 1;
         }
     }
 
@@ -70,10 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (currentWordArr.length > 0) {
             currentWordArr.pop();
-            guessedWords[guessedWords.length - 1] = currentWordArr;
-            const lastLetterEl = document.getElementById(String(availableSpace - 1));
-            lastLetterEl.textContent = "";
             availableSpace = availableSpace - 1;
+            const lastLetterEl = document.getElementById(String(availableSpace));
+            lastLetterEl.textContent = "";
         }
     }
 
@@ -86,48 +89,41 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const currentWord = currentWordArr.join("");
-        
-        // Basic animation & coloring logic
         const firstLetterId = wordIndex * 5 + 1;
-        const interval = 200;
         
         currentWordArr.forEach((letter, index) => {
+            const letterId = firstLetterId + index;
+            const tile = document.getElementById(String(letterId));
+            const tileColor = getTileColor(letter, index);
+
+            // Trigger animation
             setTimeout(() => {
-                const tileColor = getTileColor(letter, index);
-                const letterId = firstLetterId + index;
-                const letterEl = document.getElementById(letterId);
-                
-                // Add the CSS class for color
-                letterEl.classList.add("animate__animated", "animate__flipInX");
-                letterEl.classList.add(tileColor);
-                letterEl.style.backgroundColor = getComputedStyle(document.body).getPropertyValue(`--${tileColor}`);
-            }, interval * index);
+                tile.classList.add("animate__animated", "animate__flipInX");
+                tile.classList.add(tileColor);
+            }, index * 100);
         });
 
-        wordIndex += 1; // Move to next row
-
-        if (currentWord === targetWord.toLowerCase()) {
-            setTimeout(() => alert("Congratulations! You found the word!"), 1000);
-        } else if (guessedWords.length === 6) {
-            setTimeout(() => alert(`Game Over! The word was ${targetWord}`), 1000);
+        if (currentWord === targetWord) {
+            setTimeout(() => alert("Congratulations! You found the word!"), 800);
+            wordIndex = 100; // Disable further typing
+            return;
         }
 
-        guessedWords.push([]);
+        wordIndex += 1;
+
+        if (wordIndex === maxTries) {
+            setTimeout(() => alert(`Game Over! The word was ${targetWord.toUpperCase()}`), 800);
+        } else {
+            guessedWords.push([]);
+        }
     }
 
     function getTileColor(letter, index) {
-        const isCorrectLetter = targetWord.toLowerCase().includes(letter);
-
-        if (!isCorrectLetter) {
-            return "absent";
-        }
-
-        const letterInThatPosition = targetWord.toLowerCase().charAt(index);
-        const isCorrectPosition = letter === letterInThatPosition;
-
-        if (isCorrectPosition) {
+        if (targetWord[index] === letter) {
             return "correct";
+        } else if (targetWord.includes(letter)) {
+            return "present";
         }
-        return "present";
+        return "absent";
     }
 });

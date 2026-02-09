@@ -100,26 +100,37 @@ document.addEventListener("DOMContentLoaded", () => {
             const tile = document.getElementById(String(letterId));
             const tileColor = getTileColor(letter, index);
 
-            // Trigger animation
             setTimeout(() => {
                 tile.classList.add("animate__animated", "animate__flipInX");
                 tile.classList.add(tileColor);
             }, index * 100);
         });
 
+        // Winning Logic
         if (currentWord === targetWord) {
-            setTimeout(() => alert("Congratulations! You found the word!"), 800);
-            wordIndex = 100; // Disable further typing
+            wordIndex = 100; // Lock game
+            setTimeout(() => showMessage("YOU WON", "Great job!"), 1000);
             return;
         }
 
         wordIndex += 1;
 
+        // Losing Logic
         if (wordIndex === maxTries) {
-            setTimeout(() => alert(`Game Over! The word was ${targetWord.toUpperCase()}`), 800);
+            setTimeout(() => showMessage("YOU LOST, TRY AGAIN", `The word was: ${targetWord.toUpperCase()}`), 1000);
         } else {
             guessedWords.push([]);
         }
+    }
+
+    function showMessage(status, sub) {
+        const overlay = document.getElementById("message-overlay");
+        const statusText = document.getElementById("status-text");
+        const subText = document.getElementById("sub-text");
+
+        statusText.textContent = status;
+        subText.textContent = sub;
+        overlay.classList.remove("hidden");
     }
 
     function getTileColor(letter, index) {

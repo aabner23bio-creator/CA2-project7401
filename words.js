@@ -28,7 +28,7 @@ export const WORD_LIST = [
     { word: "SWEAT", fact: "Sweat is odorless; the smell is actually caused by bacteria breaking it down on your skin." },
     { word: "WHALE", fact: "The blue whale's heart is so large that a human could swim through its arteries." },
     { word: "MOUTH", fact: "The human mouth is home to over 700 different species of bacteria." },
-    { word: "SKIN", fact: "Skin is the largest organ of the body and protects us from microbes and the elements." },
+    { word: "SKINS", fact: "Skin is the largest organ of the body and protects us from microbes and the elements." },
     { word: "ADAPT", fact: "Adaptation is the process by which a species becomes better suited to its environment." },
     { word: "LARVA", fact: "A larva is a distinct juvenile form many animals undergo before metamorphosis." },
     { word: "FUNGI", fact: "Fungi are more closely related to animals than they are to plants." },

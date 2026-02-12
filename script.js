@@ -1,8 +1,10 @@
 import { WORD_LIST } from './words.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Setup Word List and Random Selection from the imported file
-    const targetWord = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)].toLowerCase();
+    // 1. Setup Word Selection (Object structure)
+    const randomSelection = WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+    const targetWord = randomSelection.word.toLowerCase();
+    const targetFact = randomSelection.fact; // New: store the fact
     
     // 2. Game State
     let guessedWords = [[]]; 
@@ -14,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const keys = document.querySelectorAll(".keyboard-button");
 
-    // Initialize the grid squares (5 columns x 5 rows)
     function createSquares() {
         const gameBoard = document.getElementById("game-board");
         gameBoard.innerHTML = ""; 
@@ -26,11 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // ... [The rest of your existing functions: handleInput, updateGuessedWords, 
-    // handleDeleteLetter, handleSubmitWord, getTileColor remain exactly the same]
-
-
-    // Handle on-screen keyboard clicks
     keys.forEach(key => {
         key.addEventListener("click", () => {
             const letter = key.getAttribute("data-key");
@@ -38,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Handle physical keyboard presses
     document.addEventListener("keydown", (e) => {
         const letter = e.key.toLowerCase();
         if (letter === "enter") {
@@ -51,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function handleInput(key) {
-        if (wordIndex >= maxTries) return; // Game over, no more input
+        if (wordIndex >= maxTries) return;
 
         if (key === "enter") {
             handleSubmitWord();
@@ -64,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateGuessedWords(letter) {
         const currentWordArr = guessedWords[guessedWords.length - 1];
-
         if (currentWordArr && currentWordArr.length < 5) {
             currentWordArr.push(letter);
             const availableSpaceEl = document.getElementById(String(availableSpace));
@@ -75,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function handleDeleteLetter() {
         const currentWordArr = guessedWords[guessedWords.length - 1];
-        
         if (currentWordArr.length > 0) {
             currentWordArr.pop();
             availableSpace = availableSpace - 1;
@@ -108,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Winning Logic
         if (currentWord === targetWord) {
-            wordIndex = 100; // Lock game
-            setTimeout(() => showMessage("YOU WON", "Great job!"), 1000);
+            wordIndex = 100; 
+            setTimeout(() => showMessage("YOU WON", "Excellent work, Biologist!", targetFact), 1000);
             return;
         }
 
@@ -117,19 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Losing Logic
         if (wordIndex === maxTries) {
-            setTimeout(() => showMessage("YOU LOST, TRY AGAIN", `The word was: ${targetWord.toUpperCase()}`), 1000);
+            setTimeout(() => showMessage("YOU LOST, TRY AGAIN", `The word was: ${targetWord.toUpperCase()}`, targetFact), 1000);
         } else {
             guessedWords.push([]);
         }
     }
 
-    function showMessage(status, sub) {
+    function showMessage(status, sub, fact) {
         const overlay = document.getElementById("message-overlay");
         const statusText = document.getElementById("status-text");
         const subText = document.getElementById("sub-text");
 
         statusText.textContent = status;
-        subText.textContent = sub;
+        // Using innerHTML to include the Bio Fact box
+        subText.innerHTML = `${sub}<br><br><div class="bio-fact"><strong>Bio Fact:</strong> ${fact}</div>`;
         overlay.classList.remove("hidden");
     }
 
